@@ -1,0 +1,11 @@
+.idea/*
+build/*
+*.pyc
+*.so
+*.dll
+*.o
+*.lib
+*.pyd
+*.log
+*.json
+*.ini
