@@ -6,7 +6,8 @@ import numpy as np
 import pandas as pd
 
 from mowgly.text import maps
-            
+
+from mowgly.text.specs import TextColumnSpec
 
 class TextColumnStore(object):
     
@@ -70,7 +71,7 @@ class TextColumnStore(object):
         for spec in self.column_specs:
             vecs = getattr(self, spec.column_name )
             if spec.fixed_length_subsample:
-                start_indices = (spec.random_state.rand(bs)*vecs.lengths[indices]).astype(np.int32, copy=False)
+                start_indices = (spec.random_state.rand(len(indices))*vecs.lengths[indices]).astype(np.int32, copy=False)
                 if not spec.uniform_start:
                     start_indices -= spec.max_len
                 start_indices = np.maximum(start_indices, 0)
