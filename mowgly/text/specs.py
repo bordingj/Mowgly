@@ -1,0 +1,63 @@
+
+
+from mowgly.text.languages import danish
+
+import numpy as np
+
+
+class TextColumnSpec(object):
+
+    def __init__(self, **kwargs):
+        raise NotImplementedError
+    
+    def add_vocab_and_mappings(self):
+        raise NotImplementedError
+
+
+
+class WordColumnSpec(TextColumnSpec):
+    pass
+    
+
+
+from mowgly.utils import check_random_state
+
+
+class CharColumnSpec(TextColumnSpec):
+    
+    def __init__(self, column_name, language, lower=True, min_len=1, max_len=5000, 
+                 fixed_length_subsample=False, uniform_start=False, random_state=None, dtype=np.int16):
+        
+        self.column_name = column_name
+        self.language = language
+        self.lower = lower
+        self.min_len = min_len
+        self.max_len = max_len
+        self.fixed_length_subsample = fixed_length_subsample
+        self.dtype = dtype
+        self.random_state = check_random_state(random_state)
+        self.uniform_start = uniform_start
+        
+        self.add_vocab_and_mappings()
+        
+    def add_vocab_and_mappings(self):
+        
+        if self.language == 'danish':
+            if self.lower:
+                vocab = danish.LOWER_CHAR_VOCAB
+                self.whitespace_chars = danish.WHITESPACES
+                self.unknown_char = danish.UNKNOWN_CHAR
+            else:
+                raise NotImplementedError
+        else:
+            raise NotImplementedError
+            
+        self.char2id = dict(zip(vocab, range(len(vocab))))
+        self.id2char = {id: char for char, id in self.char2id.items()}
+        self.vocab = set(vocab)
+        self.vocabsize = len(vocab)
+        self.unknown_id = self.char2id[self.unknown_char]
+        self.eos_char = danish.EOS_CHAR
+        self.eos_id = self.char2id[self.eos_char]
+        self.whitespace_ids = np.asarray([self.char2id[c] for c in self.whitespace_chars], 
+                                         dtype=self.dtype)

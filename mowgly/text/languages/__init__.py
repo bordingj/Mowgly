@@ -1,0 +1,1 @@
+from mowgly.text.languages import danish
