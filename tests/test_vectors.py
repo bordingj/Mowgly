@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from mowgly.containers import Vectors
+from mowgly.containers import to_vectors
 
 
 def naive_make_padded_matrix(array_of_arrays, lens, indices, fill_value):
@@ -30,12 +30,12 @@ def naive_make_padded_matrix_with_start_indices(array_of_arrays, start_indices, 
 
 def test():
     num_threads = 4
-    print('\nTesting mowgly.containers.Vectors ...')
+    print('\nTesting mowgly.containers.Int16Vectors ...')
     N = 100000
     bs = 256
     list_of_1darrays = [np.random.randint(0,150,np.random.randint(500,2500),dtype=np.int16) for i in range(N)]
     indices = np.random.randint(0,N,bs).astype(np.int32)
-    vecs = Vectors(list_of_1darrays)
+    vecs = to_vectors(list_of_1darrays)
     out = vecs.make_padded_matrix(indices, 0)
     array_of_arrays = np.asarray(list_of_1darrays)
     lens = np.asarray([len(arr) for arr in array_of_arrays])

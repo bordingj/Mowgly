@@ -25,14 +25,16 @@ from mowgly.utils import check_random_state
 
 class CharColumnSpec(TextColumnSpec):
     
-    def __init__(self, column_name, language, lower=True, min_len=1, max_len=5000, 
-                 fixed_length_subsample=False, uniform_start=False, random_state=None, dtype=np.int16):
+    def __init__(self, column_name, language, lower=True, min_len=1, max_len=2000, 
+                 fixed_length_subsample=False, uniform_start=False, sample_len=200,
+                 random_state=None, dtype=np.int16):
         
         self.column_name = column_name
         self.language = language
         self.lower = lower
         self.min_len = min_len
         self.max_len = max_len
+        self.sample_len = sample_len
         self.fixed_length_subsample = fixed_length_subsample
         self.dtype = dtype
         self.random_state = check_random_state(random_state)

@@ -21,20 +21,18 @@ cdef extern from "templates.h" nogil:
                                          T* mat, const int32_t& num_cols, const T& fill_value,
                                          const int64_t num_threads)
         
-class Vectors(object):
-    
-    def __new__(self, list list_of_1darrays):
-        cdef ndarray first_array = list_of_1darrays[0]
-        if first_array.dtype == np.int16:
-            return Int16Vectors(list_of_1darrays)
-        elif first_array.dtype == np.int32:
-            return Int32Vectors(list_of_1darrays)
-        elif first_array.dtype == np.int64:
-            return Int64Vectors(list_of_1darrays)
-        elif first_array.dtype == np.float32:
-            return Float32Vectors(list_of_1darrays)
-        else:
-            raise NotImplementedError("Unsupported dtype of 1darrays")
+def to_vectors(list_of_1darrays):
+    cdef ndarray first_array = list_of_1darrays[0]
+    if first_array.dtype == np.int16:
+        return Int16Vectors(list_of_1darrays)
+    elif first_array.dtype == np.int32:
+        return Int32Vectors(list_of_1darrays)
+    elif first_array.dtype == np.int64:
+        return Int64Vectors(list_of_1darrays)
+    elif first_array.dtype == np.float32:
+        return Float32Vectors(list_of_1darrays)
+    else:
+        raise NotImplementedError("Unsupported dtype of 1darrays")
         
 
 cdef class Int16Vectors(object):
