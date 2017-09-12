@@ -84,7 +84,7 @@ class TextColumnStore(object):
                         start_indices = (spec.random_state.rand(len(indices))*vecs.lengths[indices]
                                         ).astype(np.int32, copy=False)
                         if not spec.uniform_start:
-                            start_indices -= spec.max_len
+                            start_indices -= spec.max_len//2
                         start_indices = np.maximum(start_indices, 0)
                         arr = vecs.make_padded_matrix_with_start_indices(
                                                     indices, start_indices, spec.sample_len, spec.eos_id)

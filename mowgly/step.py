@@ -8,4 +8,5 @@ class Step(object):
         raise NotImplementedError
 
     def fit_forward(self, **inputs):
-        raise NotImplementedError
+        self.fit(**inputs)
+        return self.forward(**inputs)
