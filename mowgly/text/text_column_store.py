@@ -68,7 +68,7 @@ class TextColumnStore(object):
         """ building data containers for quick minibatch generation """
         for spec in self.column_specs:
             if hasattr(self, spec.column_name):
-                raise RuntimeError("column store alreade has attribute {0}".format(spec.column_name))
+                raise RuntimeError("column store already has attribute {0}".format(spec.column_name))
             setattr(self, spec.column_name, 
                     maps.texts2numerical( self.corpus.loc[:,spec.column_name].values, spec, n_jobs) 
                     )
@@ -83,8 +83,7 @@ class TextColumnStore(object):
                     if spec.fixed_length_subsample:
                         start_indices = (spec.random_state.rand(len(indices))*vecs.lengths[indices]
                                         ).astype(np.int32, copy=False)
-                        if not spec.uniform_start:
-                            start_indices -= spec.max_len//2
+                        start_indices -= spec.max_len//2 if spec.uniform_start else spec.max_len
                         start_indices = np.maximum(start_indices, 0)
                         arr = vecs.make_padded_matrix_with_start_indices(
                                                     indices, start_indices, spec.sample_len, spec.eos_id)
