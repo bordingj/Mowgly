@@ -26,3 +26,4 @@ def get_train_test_random_indices(num_samples, test_ratio, random_state=None):
     train_indices = indices[num_samples_test:]
 
     return train_indices, test_indices
+
