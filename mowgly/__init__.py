@@ -7,3 +7,7 @@ from mowgly import utils
 from mowgly import containers
 from mowgly import sampling
 from mowgly import text
+
+from mowgly import model
+
+from mowgly import training
