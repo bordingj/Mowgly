@@ -4,7 +4,6 @@ from copy import deepcopy
 from mowgly.training import loggers
 
 
-
 def early_stopping_train(model, generator_factory, loss_function, score_function,
                          starting_patience, max_epochs, patience_increase_threshold=0.995, patience_multiplier=2.0,
                          logger=None):
