@@ -35,6 +35,7 @@ class GeneratorFactory(object):
         """
         This method returns a generator of validation minibatches
         """
+        raise NotImplementedError
 
 
 class DefaultGeneratorFactory(GeneratorFactory):
