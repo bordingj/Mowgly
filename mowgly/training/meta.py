@@ -3,6 +3,8 @@ from copy import deepcopy
 
 from mowgly.training import loggers
 
+from mowgly.training.generators import GeneratorFactory
+
 
 def early_stopping_train(model, generator_factory, loss_function, score_function,
                          starting_patience, max_epochs, patience_increase_threshold=0.995, patience_multiplier=2.0,
@@ -32,8 +34,12 @@ def early_stopping_train(model, generator_factory, loss_function, score_function
     :return: best model found during training.
     """
 
+    assert isinstance(generator_factory, GeneratorFactory)
+
     if logger is None:
         logger = loggers.ConsoleLogger()
+    else:
+        assert hasattr(logger, 'log_value')
 
     # get a validation generator and score model
     val_generator = generator_factory.make_val_generator()
