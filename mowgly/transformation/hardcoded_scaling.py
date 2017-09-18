@@ -24,11 +24,11 @@ class HardcodedScaling(Step):
 
     def forward(self, **inputs):
 
-        for input_name, feature_names in self.input_name2rescalings:
+        for input_name, rescalings in self.input_name2rescalings:
             input = inputs[input_name]
             if self.copy:
                 input = input.copy()
-            for feat_name, rescaling in self.input_name2rescalings[input_name].items():
+            for feat_name, rescaling in rescalings.items():
                 offset, normalizer = rescaling
                 input[feat_name] -= offset
                 input[feat_name] /= normalizer
