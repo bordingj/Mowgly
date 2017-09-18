@@ -52,7 +52,7 @@ def early_stopping_train(model, generator_factory, loss_function, score_function
         # get a train generator and train the model for one epoch
         train_generator = generator_factory.make_train_generator()
         train_loss = model.train(train_generator, loss_function)
-        logger.log_value('train_loss', best_score, epoch_number + 1)
+        logger.log_value('train_loss', train_loss, epoch_number + 1)
 
         # get a validation generator and compute validation score
         val_generator = generator_factory.make_val_generator()
