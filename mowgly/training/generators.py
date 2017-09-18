@@ -55,7 +55,7 @@ class DefaultGeneratorFactory(GeneratorFactory):
         :type train_minibatch_size: int
         :param val_minibatch_size: number of samples in validation minibatch ( will default to train_minibatch_size * 2 )
         :type val_minibatch_size: int
-        :param pdf: sampling probability density function.
+        :param pdf: sampling probability density function (default: None - will assume equal probability).
         :type pdf: 1d numpy.ndarray of type float64
         :param num_threads: number of threads to use when sampling (default: 4)
         :type num_threads: int
