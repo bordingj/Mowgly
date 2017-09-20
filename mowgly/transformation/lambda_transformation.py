@@ -4,11 +4,11 @@ from mowgly.step import Step
 import numpy as np
 
 
-class SigmoidTransformation(Step):
+class LambdaTransformation(Step):
     """
     This step applies the natural sigmoid transformation
     """
-    def __init__(self, input_name2feature_names, sigmoid_function='tanh', copy=False):
+    def __init__(self, input_name2feature_names, lambda_function=np.log, copy=False):
         """
         :param input_name2feature_names: mapping from input_name to iterable of feature_names
         :type input_name2feature_names: dict of iterables
@@ -17,7 +17,7 @@ class SigmoidTransformation(Step):
         :param copy: whether to copy input or not (default: False)
         :type copy: bool
         """
-        self.sigmoid_function = sigmoid_function
+        self.lambda_function = lambda_function
         self.input_name2feature_names = input_name2feature_names
         self.copy = copy
 
@@ -31,11 +31,7 @@ class SigmoidTransformation(Step):
             if self.copy:
                 input = input.copy()
             for feat_name in feature_names:
-                if self.sigmoid_function == 'tanh':
-                    input[feat_name] = np.tanh(input[feat_name])
-                else:
-                    msg = "unsupported sigmoid function"
-                    raise NotImplementedError(msg)
+                input[feat_name] = self.lambda_function(input[feat_name])
 
         return inputs
 
