@@ -1,4 +1,6 @@
 
+
+import numba as nb
 import numpy as np
 
 from mowgly.containers.vectors import to_vectors
@@ -20,10 +22,6 @@ def chars2ids(chars, char2id, unknown_id, dtype=np.short, max_len=None,
     return out
 
 
-def get_whitespace_indices_1d(seq, whitespace_ids):
-    mask = np.in1d(seq, whitespace_ids)
-    return np.argwhere(mask).ravel().astype(np.int32, copy=False)
-
 def texts2numerical(texts, spec, n_jobs):
     out = {}
     print('building data-container for "{0}" column ... '.format(spec.column_name))
@@ -36,12 +34,6 @@ def texts2numerical(texts, spec, n_jobs):
                 joblib.delayed(chars2ids)(s, char2id=spec.char2id, 
                         unknown_id=spec.unknown_id, max_len=spec.max_len, dtype=spec.dtype) for s in texts)
         out['id_vectors'] = to_vectors(list_of_id_vecs)
-        print('building data-container for "{0}" whicespace indices... '.format(spec.column_name)) 
-        list_of_idx_vecs = joblib.Parallel(n_jobs=n_jobs,max_nbytes=None)(
-                joblib.delayed(get_whitespace_indices_1d)(
-                        s, spec.whitespace_ids) for s in list_of_id_vecs)
-        out['whitespace_indices'] = to_vectors(list_of_idx_vecs)
-        out['num_whitespaces'] =  np.asarray([len(v) for v in list_of_idx_vecs])
     else:
         msg = "Unrecognized spec"
         raise NotImplementedError(msg)

@@ -9,6 +9,8 @@ from mowgly.containers.vectors import (Int16Vectors,
                                        Float32Vectors)
 
 from mowgly.text.specs import TextColumnSpec
+from mowgly.text.specs import CharColumnSpec
+
 
 class TextColumnStore(object):
     
@@ -32,7 +34,7 @@ class TextColumnStore(object):
         else:
             self.corpus = corpus.copy()    
         
-        self.column_specs = column_specs
+        self._column_specs_list = column_specs
         
         self.corpus_arange = np.arange(len(self.corpus), dtype=np.int32)
         self.size = len(self.corpus_arange)
@@ -49,34 +51,43 @@ class TextColumnStore(object):
         
     def _cut_corpus(self):
         """ getting the length of texts and excluding those rows with too short texts """
-        for spec in self.column_specs:
+        for spec in self._column_specs_list:
             new_col_name = spec.column_name + '_len'
             self.corpus[new_col_name] = [len(s) for s in self.corpus[spec.column_name]]
         bool_ = self.corpus[new_col_name] > spec.min_len
-        for spec in self.column_specs[:-1]:
+        for spec in self._column_specs_list[:-1]:
             new_col_name = spec.column_name + '_len'
             bool_ &= self.corpus[new_col_name] > spec.min_len
         self.corpus = self.corpus.loc[bool_]
         
     def _lowering_corpus(self):
         """ lowering texts """
-        for spec in self.column_specs:
+        for spec in self._column_specs_list:
             if spec.lower:
                 self.corpus.loc[:,spec.column_name] = self.corpus[spec.column_name].str.lower()
 
     def _build_containers(self, n_jobs=4):
         """ building data containers for quick minibatch generation """
-        for spec in self.column_specs:
-            if hasattr(self, spec.column_name):
-                raise RuntimeError("column store already has attribute {0}".format(spec.column_name))
-            setattr(self, spec.column_name, 
-                    maps.texts2numerical( self.corpus.loc[:,spec.column_name].values, spec, n_jobs) 
-                    )
+        columns = {}
+        column_specs = {}
+        for spec in self._column_specs_list:
+            columns[spec.column_name] = maps.texts2numerical( self.corpus.loc[:,spec.column_name].values, spec, n_jobs)
+            column_specs[spec.column_name] = spec
+        self._columns = columns
+        self._column_specs = column_specs
+
+    @property
+    def columns(self):
+        return self._columns.copy()
+
+    @property
+    def specs(self):
+        return self._column_specs.copy()
     
     def __getitem__(self, indices):
         out = {}
-        for spec in self.column_specs:
-            d_in = getattr(self, spec.column_name )
+        for column_name, spec in self._column_specs.items():
+            d_in = self._columns[column_name]
             d_out = {}
             for key, vecs in d_in.items():
                 if key == 'id_vectors':
@@ -90,14 +101,10 @@ class TextColumnStore(object):
                     else:
                         arr = vecs.make_padded_matrix(indices, spec.eos_id)
                     d_out[key] = arr
-                elif key == 'whitespace_indices':
-                    d_out[key] = vecs.make_padded_matrix(indices, spec.eos_id)
-                elif key == 'num_whitespaces':
-                    d_out[key] = vecs[indices]
                 elif key == 'level':
                     d_out[key] = vecs
                 else:
                     raise RuntimeError("something is wrong")
-                out[spec.column_name] = d_out
+                out[column_name] = d_out
 
         return out
