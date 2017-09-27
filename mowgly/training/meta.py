@@ -7,7 +7,7 @@ from mowgly.training.generators import GeneratorFactory
 from mowgly.model import Model
 
 
-def early_stopping_train(model, generator_factory, loss_function, score_function,
+def early_stopping_train(model, generator_factory,
                          starting_patience, max_epochs, report_val_loss=True,
                          patience_increase_threshold=0.995, patience_multiplier=2.0,
                          logger=None):
@@ -49,7 +49,7 @@ def early_stopping_train(model, generator_factory, loss_function, score_function
     # get a validation generator and score model
     val_generator = generator_factory.make_val_generator()
     model.set_to_inference_mode()
-    best_score = model.score(val_generator, score_function)
+    best_score = model.score(val_generator)
     logger.log_value('best_val_score', best_score, 0)
 
     best_model = deepcopy(model)
@@ -64,16 +64,16 @@ def early_stopping_train(model, generator_factory, loss_function, score_function
         # get a train generator and train the model for one epoch
         train_generator = generator_factory.make_train_generator()
         model.set_to_training_mode()
-        train_loss = model.loss(train_generator, loss_function)
+        train_loss = model.loss(train_generator)
         logger.log_value('train_loss', train_loss, epoch_number + 1)
 
         # get a validation generator and compute validation score
         val_generator = generator_factory.make_val_generator()
         model.set_to_inference_mode()
-        current_score = model.score(val_generator, score_function)
+        current_score = model.score(val_generator)
         logger.log_value('current_val_score', current_score, epoch_number + 1)
         if report_val_loss:
-            val_loss = model.loss(val_generator, loss_function)
+            val_loss = model.loss(val_generator)
             logger.log_value('val_loss', val_loss, epoch_number + 1)
 
         if current_score > best_score:

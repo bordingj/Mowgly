@@ -2,10 +2,10 @@
 
 class Model(object):
 
-    def score(self, val_generator, score_function):
+    def score(self, val_generator):
         raise NotImplementedError
 
-    def loss(self, train_generator, loss_function):
+    def loss(self, train_generator):
         raise NotImplementedError
 
     def set_to_inference_mode(self):
