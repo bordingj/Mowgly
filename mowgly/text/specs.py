@@ -1,6 +1,6 @@
 
 
-from mowgly.text.languages import danish
+from mowgly.text.languages import danish, english
 
 import numpy as np
 
@@ -45,12 +45,15 @@ class CharColumnSpec(TextColumnSpec):
     def add_vocab_and_mappings(self):
         
         if self.language == 'danish':
-            if self.lower:
-                vocab = danish.LOWER_CHAR_VOCAB
-                self.whitespace_chars = danish.WHITESPACES
-                self.unknown_char = danish.UNKNOWN_CHAR
-            else:
-                raise NotImplementedError
+            lang = danish
+        elif self.language == 'english':
+            lang = english
+        else:
+            raise NotImplementedError
+        if self.lower:
+            vocab = lang.LOWER_CHAR_VOCAB
+            self.whitespace_chars = lang.WHITESPACES
+            self.unknown_char = lang.UNKNOWN_CHAR
         else:
             raise NotImplementedError
             
