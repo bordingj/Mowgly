@@ -9,7 +9,6 @@ from mowgly.containers.vectors import (Int16Vectors,
                                        Float32Vectors)
 
 from mowgly.text.specs import TextColumnSpec
-from mowgly.text.specs import CharColumnSpec
 
 
 class TextColumnStore(object):
@@ -35,11 +34,11 @@ class TextColumnStore(object):
             self.corpus = corpus.copy()    
         
         self._column_specs_list = column_specs
-        
-        self.corpus_arange = np.arange(len(self.corpus), dtype=np.int32)
-        self.size = len(self.corpus_arange)
+
 
         self._cut_corpus()
+
+        self.size = len(self.corpus)
 
         self._lowering_corpus()
         

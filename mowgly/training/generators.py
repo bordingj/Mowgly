@@ -108,7 +108,7 @@ class DefaultGeneratorFactory(GeneratorFactory):
         random_indices = self.random_state.choice(self.train_indices, size=self.train_size, replace=True)
 
         for i in range(0, self.train_size, self.train_minibatch_size):
-            sub_indices = random_indices[i:i + self.val_minibatch_size]
+            sub_indices = random_indices[i:i + self.train_minibatch_size]
             yield take_sub_arrays(self.arrays, sub_indices)
 
     def make_val_generator(self):
